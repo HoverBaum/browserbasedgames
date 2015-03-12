@@ -2,17 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Tunnel</title>
+    <title>Browser based games</title>
 	<link rel="stylesheet" href="style.css">
-	<script src="runner.js" type="text/javascript"></script>
+	<script src="dodge-js.js" type="text/javascript"></script>
 </head>
 <body>
 
 	<canvas id="canvas"></canvas>
-
-	<section id="scoarboard">
-		<span id="traveled">You have traveled <span id="distance"></span>m.</span>
-	</section>
 	
  	<div id="endgame">
         <h1>Game Over</h1>
@@ -30,7 +26,11 @@
 			document.getElementById("endgame").style.display = "block";
 			document.getElementById("endgame").style.opacity = "1";
 			document.getElementById('eg-text').innerHTML = text;
-			document.getElementById("play-again").onclick = Game.start;
+			document.getElementById("play-again").onclick = function() {
+				Game.start();
+				document.getElementById("endgame").style.display = "none";
+				document.getElementById("endgame").style.opacity = "0";
+			}
 		}
 		
 		window.onblur = Game.pause;
