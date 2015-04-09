@@ -32,8 +32,6 @@ Game = (function() {
 	
 	var blocks = [];
 	
-	//How far we have build ground already.
-	var groundReach = 0;
 	
 	//How far the last obstacle reaches.
 	var obstacleReach = 0;
@@ -49,6 +47,10 @@ Game = (function() {
 	*	Start the game.
 	*/
 	function startGame(gameCanvas) {
+		
+		//Basic set-up
+		blocks = [];
+		pause();
 		
 		//Fill basic variables
 		canvas = gameCanvas;
@@ -194,6 +196,7 @@ Game = (function() {
 	*	Starts a jump.
 	*/	
 	function startJump() {
+		if(jumping) return;
 		jumping = true;
 		jumpStart = Date.now();
 	}
@@ -220,7 +223,8 @@ Game = (function() {
 	*	Will generate and obstacle starting at a given x index.
 	*/
 	function generateObstacle(base) {
-		var index = Math.round(Math.random() * possibleObstacles.length);
+		/*var index = Math.round(Math.random() * possibleObstacles.length) - 1;
+		if(index < 0) {index = 0;}
 		var obstacle = possibleObstacles[index];
 		obstacle.elements.forEach(function(obst) {
 			var width = obst.width * baseDimension;
@@ -232,6 +236,44 @@ Game = (function() {
 			blocks.push(block);
 		});
 		var longer = (Math.random() > 0.8) ? baseDimension * Math.random() * 5 : 0;
+		if(longer < 0) longer = baseDimension;
+		obstacleReach = base + obstacle.width * baseDimension + longer;*/
+		var comp = Math.random();
+		var maxHeight = (comp < 0.65) ? 2 : 3;
+	
+		//Alwas 4 half blocks.
+		var obj = {
+			width: 2,
+			elements: []
+		}
+		for(var i = 0; i < 4; i++) {
+			var one = {
+				x: i,
+				y: -1,
+			}
+			if(i === 0 || i === 3 || i === 2) {
+				one.height = Math.round(Math.random() * 2) * 0.5;
+			} else {
+				one.height = Math.round(Math.random() * maxHeight) * 0.5;
+			}
+			one.width = 0.5;
+			
+			//Only remember this if it is actually there. Else player my die tot he ground.
+			if(one.height > 0) {
+				obj.elements.push(one);
+			}
+		}
+		var obstacle = obj;
+		obstacle.elements.forEach(function(obst) {
+			var width = obst.width * baseDimension;
+			var height = obst.height * baseDimension;
+			var y = baseLine + (height * obst.y);
+			var x = (width * obst.x) + base;
+			var color = obst.color || obstacleColor;
+			var block = createEntity(x, y, width, height, color);
+			blocks.push(block);
+		});
+		var longer = (Math.random() > 0.66) ? baseDimension * Math.random() * 5 : 0;
 		if(longer < 0) longer = baseDimension;
 		obstacleReach = base + obstacle.width * baseDimension + longer;
 	}
