@@ -1,0 +1,19 @@
+{
+  "name": "browserbasedgames",
+  "homepage": "https://github.com/HoverBaum/browserbasedgames",
+  "authors": [
+    "Hendrik Wallbaum <mail@hendrikwallbaum.de>"
+  ],
+  "description": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "HOPA": "https://github.com/HoverBaum/HOPA.git"
+  }
+}
