@@ -1,4 +1,4 @@
-![Alt text](/img/logo.png?raw=true "Browser Based Games logo" width="200")
+![Alt text](/img/logo.png?raw=true "Browser Based Games logo")
 # Browser Based Games
 A collection of simple JavaScript games.
 
