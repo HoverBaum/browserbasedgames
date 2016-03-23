@@ -1,4 +1,5 @@
-# browserbasedgames
+![Alt text](/img/logo.png?raw=true "Browser Based Games logo" width="200")
+# Browser Based Games
 A collection of simple JavaScript games.
 
 [Play them now!](http://hoverbaum.github.io/browserbasedgames/)
