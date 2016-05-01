@@ -6,14 +6,14 @@
 const Game = (function() {
 
     //The interval for the tick.
-    var interval = null;
+    let interval = null;
 
     //Boolean wether or not the game is running.
     //Generally the game is on-going. Not indicating wether or not game is paused.
-    var running = false;
+    let running = false;
 
     //The function to be called once the game is over.
-    var gameOverCallback = null;
+    let gameOverCallback = null;
 
     /**
      *	Start the game.
@@ -30,7 +30,9 @@ const Game = (function() {
      *	@private
      */
     function tick() {
-        if (!running) return false;
+        if (!running) {
+            return false;
+        }
     }
 
     /**
@@ -46,7 +48,9 @@ const Game = (function() {
      *	@method GAME#resume
      */
     function resume() {
-        if (!running) return;
+        if (!running) {
+            return;
+        }
         interval = setInterval(tick, 50);
     }
 
@@ -59,7 +63,7 @@ const Game = (function() {
         pause();
         running = false;
         if (gameOverCallback !== null) {
-            var text = '';
+            let text = '';
             gameOverCallback(text);
         }
     }
