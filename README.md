@@ -5,6 +5,6 @@ A collection of simple JavaScript games.
 
 [Play them now!](http://hoverbaum.github.io/browserbasedgames/)
 
-## Technical
+## Get involved
 
-All games are simple implementations of classics that utilize canvas to create a game. This project uses [HOPA](https://github.com/HoverBaum/HOPA) to create a single page application in which users can play the games.
+All games are simple implementations of classics that utilize canvas to create a game. If you are interested in writing games check out the [dev-docs](docs/development.md).

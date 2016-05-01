@@ -1,2 +1,4 @@
 .brackets.json
 bower_components
+docs/jsdoc
+node_modules

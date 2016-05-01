@@ -1,0 +1,31 @@
+{
+  "name": "browserbasedgames",
+  "version": "1.0.0",
+  "description": "![Alt text](/img/logo-small.png?raw=true \"Browser Based Games logo\")",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "md-docs": "node_modules/.bin/jsdoc2md src/games/standard.js --template docs/development-template.md > docs/development.md",
+    "jsdoc": "./node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
+    "serve-docs": "./node_modules/.bin/live-server ./docs/jsdoc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HoverBaum/browserbasedgames.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HoverBaum/browserbasedgames/issues"
+  },
+  "homepage": "https://github.com/HoverBaum/browserbasedgames#readme",
+  "devDependencies": {
+    "docdash": "^0.3.0",
+    "jsdoc": "^3.4.0",
+    "jsdoc-to-markdown": "^1.3.6",
+    "live-server": "^1.0.0"
+  }
+}
