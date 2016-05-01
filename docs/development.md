@@ -9,6 +9,8 @@ const GAME = (function(){
 }());
 ```
 
+Check out the documentation below to see the interface expected from a game. For convenience you can copy the `games/standard.js` file to start writing a new game.
+
 <a name="GAME"></a>
 
 ## GAME : <code>object</code>
