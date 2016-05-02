@@ -1,4 +1,4 @@
-var Game = (function() {
+var dodge = (function() {
     var width = window.innerWidth;
     var height = window.innerHeight;
     var entSpeed = 2; //Speed of entities.
@@ -16,7 +16,7 @@ var Game = (function() {
     var gameOverCallback = null;
 	var running = false;
 	var style = null;
-	
+
 	var css = '#HUD{position:absolute;z-index:5;top:20px;right:20px;padding:5px;display:block;background-color:#f8f8f8;-webkit-box-shadow:0 0 5px 0 rgba(0,0,0,.75);-moz-box-shadow:0 0 5px 0 rgba(0,0,0,.75);box-shadow:0 0 5px 0 rgba(0,0,0,.75);border-radius:3px}#HUD>#time{display:block}#HUD>#time>span{float:right}#HUD>h1{font-size:22px;margin:0 0 5px}#HUD>#difficulty{display:block;position:relative}#HUD>#difficulty>span{float:right}#HUD>#difficulty>#level-line-js{position:absolute;display:block;top:100%;left:0;min-width:1px;height:1px;background-color:#000}';
 
     function startGame() {
@@ -36,12 +36,12 @@ var Game = (function() {
         var d = new Date();
         startTime = d.getTime();
         lastDiffInc = startTime; //Last time the difficulty rose.
-		
+
         calculateChance();
 		running = true;
 		displayHUD();
         startTick();
-		
+
     }
 
 
@@ -89,11 +89,11 @@ var Game = (function() {
 		document.head.appendChild(style);
 		document.body.appendChild(div);
     }
-	
-	
+
+
 	var updateHUD = function() {
 		var d = new Date();
-		
+
         document.getElementById("time-js").innerHTML = Math.floor((d.getTime() - startTime) / 1000) + 's';
         document.getElementById("difficulty-js").innerHTML = difficulty;
 
@@ -281,12 +281,22 @@ var Game = (function() {
         this.color = clr;
     }
 
+    const infoObject = {
+        name: 'Dodge-JS',
+        description: 'Dodge all the falling blocks.',
+        shortDescription: 'Dodge all the falling blocks.',
+        imgUrl: 'dodge.jpg',
+        manual: 'Use "a" and "d" or "left" and "right" to dodge the falling blocks.',
+        file: 'dodge-js.js'
+    }
 
     return {
         start: startGame,
         pause: pause,
         resume: continueGame,
-        setGameOverCallback: setGameOverCallback
+        setGameOverCallback: setGameOverCallback,
+        info: infoObject
     }
 
 }());
+GAMES.push(dodge);

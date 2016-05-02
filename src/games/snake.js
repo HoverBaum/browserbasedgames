@@ -1,4 +1,4 @@
-var Game = (function() {
+var snake = (function() {
 	//orientation of the snake. 1-4 for right, down, left, up.
 
 	//The base width and height of a single element.
@@ -21,9 +21,9 @@ var Game = (function() {
 	var cv = null;
 
 	var tickInterval = null;
-	
+
 	var gameOverCallback = null;
-	
+
 	var running = false;
 
 	function start() {
@@ -111,7 +111,7 @@ var Game = (function() {
 					}
 				}
 			}
-		}	
+		}
 	}
 
 	/**
@@ -125,7 +125,7 @@ var Game = (function() {
 			gameOverCallback(text);
 		}
 	}
-	
+
 	/**
 	*	Set the callback for when game is over.
 	*/
@@ -324,12 +324,23 @@ var Game = (function() {
 			}
 		}
 	}
-	
+
+	const infoObject = {
+        name: 'Snake',
+        description: 'Grow as long as you can.',
+        shortDescription: 'Grow as long as you can.',
+        imgUrl: 'snake.jpg',
+        manual: 'Use "wasd" or the arrow keys to move.',
+        file: 'snake.js'
+    }
+
 	//Return an Object = set Game to this Object.
 	return {
 		start: start,
 		pause: pause,
 		resume: resume,
-		setGameOverCallback: setGameOverCallback
+		setGameOverCallback: setGameOverCallback,
+		info: infoObject
 	};
 }());
+GAMES.push(snake);

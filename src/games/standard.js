@@ -27,8 +27,10 @@ const Game = (function() {
     const infoObject = {
         name: 'Game',
         description: 'basic game template',
+        shortDescription: 'One sentenceonly',
         imgUrl: '',
-        manual: 'Press buttons to play!'
+        manual: 'Press buttons to play!',
+        file: 'standard.js'
     }
 
     /**

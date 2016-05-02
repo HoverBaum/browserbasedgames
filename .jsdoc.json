@@ -5,7 +5,7 @@
     },
     "source": {
         "include": ["src/games"],
-        "includePattern": "standard.js$",
+        "includePattern": "(standard.js$|games.js$)",
         "excludePattern": "(node_modules/|docs)"
     },
     "plugins": [

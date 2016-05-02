@@ -11,69 +11,69 @@ Blue: 147CB2
 lighter blue 0D8ACC
 
 */
-	
-Game = (function() {
+
+var runner = (function() {
 
 	//The interval for the tick.
 	var interval = null;
-	
+
 	//Boolean wether or not the game is running.
 	//Generally the game is on-going. Not indicating wether or not game is paused.
 	var running = false;
-	
+
 	//The function to be called once the game is over.
 	var gameOverCallback = null;
-	
+
 	var player = null;
-	
+
 	var baseDimension = 20;
 	var baseLine = 0;
 	var canvas = null;
-	
+
 	var blocks = [];
-	
-	
+
+
 	//How far the last obstacle reaches.
 	var obstacleReach = 0;
-	
+
 	var groundColor = '#147CB2';
 	var obstacleColor = '#0D8ACC';
-	
+
 	//Remember to only jump once.
 	var jumping = false;
 	var jumpStart = 0;
-	
+
 	/**
 	*	Start the game.
 	*/
 	function startGame(gameCanvas) {
-		
+
 		//Basic set-up
 		blocks = [];
 		pause();
-		
+
 		//Fill basic variables
 		canvas = gameCanvas;
 		baseDimension = Math.floor(window.innerWidth / 10);
-		
+
 		//Make sure we can fit at least 5 blocks vertically.
 		if(Math.floor(window.innerHeight/5) > baseDimension) {
 			baseDimension = Math.floor(window.innerHeight/5);
 		}
 		baseLine = Math.round(window.innerHeight - (baseDimension * 1.5));
-		
+
 		//Create player and starting ground.
 		var base = baseDimension / 2;
 		player = createEntity(baseDimension, baseLine-base, base, base, "#FF2939");
 		player.angle = 45;
 
 		obstacleReach = window.innerWidth / 2;
-		
+
 		registerListener();
 		running = true;
 		resume();
 	}
-	
+
 	/**
 	*	Creates a new entity with the gives parameters.
 	*/
@@ -86,7 +86,7 @@ Game = (function() {
 			color: color
 		};
 	}
-	
+
 	/**
 	*	The tick of the game that gets called rappidly.
 	*/
@@ -94,18 +94,18 @@ Game = (function() {
 		if(!running) return false;
 		player.x += baseDimension / 30;
 		jump();
-		
+
 		//Keep the player entertained with obstacles.
 		if((player.x + window.innerWidth) > obstacleReach) {
-			
+
 			//We are nice and ensuring that the player can land and take of again.
 			generateObstacle(obstacleReach + baseDimension * 5);
 		}
-		
+
 		checkCollosion();
 		drawFrame();
 	}
-	
+
 	/**
 	*	Checks for collision between the player and any object.
 	*/
@@ -113,52 +113,52 @@ Game = (function() {
 		var right = player.x + player.width;
 		var bottom = player.y + player.height;
 		blocks.forEach(function(block) {
-			
+
 			//Check if collides with player, easy since player can only approach from left.
 			if(bottom >= block.y && right >= block.x && player.x <= (block.x + block.width)) {
 				gameOver();
 			}
-			
+
 			//Remove if out of view for sure.
 			if(block.x < (player.x - window.innerWidth)) {
 				blocks.splice(blocks.indexOf(block), 1);
 			}
-				
+
 		})
 	}
-	
+
 	/**
 	*	Draws the current frame of the game.
 	*/
 	function drawFrame() {
-		
+
 		//Get context and clear canvas.
 		var ctx = canvas.getContext('2d');
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
-		
+
 		//Draw the ground.
 		ctx.fillStyle = groundColor;
 		ctx.fillRect(0, baseLine, window.innerWidth, window.innerHeight-baseLine);
-		
+
 		//Draw the blocks.
 		blocks.forEach(function(block) {
 			ctx.fillStyle = block.color;
 			ctx.fillRect(block.x-player.x+baseDimension, block.y, block.width+1, block.height);
 		})
-		
+
 		//Draw the player
 		ctx.fillStyle = player.color;
 		ctx.fillRect(baseDimension, player.y, player.width, player.height);
 	}
-	
+
 	/**
 	*	Pause the game.
 	*/
 	function pause() {
 		clearInterval(interval);
 	}
-	
+
 	/**
 	*	Resume the game.
 	*/
@@ -166,7 +166,7 @@ Game = (function() {
 		tick();
 		interval = setInterval(tick, 10);
 	}
-	
+
 	/**
 	*	Called when the game is over, the player looses.
 	*/
@@ -180,7 +180,7 @@ Game = (function() {
 			gameOverCallback(text);
 		}
 	}
-	
+
 	/**
 	*	Registers all listeners to player input.
 	*/
@@ -191,24 +191,24 @@ Game = (function() {
 			}
 		})
 	}
-	
+
 	/**
 	*	Starts a jump.
-	*/	
+	*/
 	function startJump() {
 		if(jumping) return;
 		jumping = true;
 		jumpStart = Date.now();
 	}
-	
+
 	/**
 	*	Performs a jump.
 	*/
 	function jump() {
-		
+
 		//Do the jump. Wurf nach http://de.wikipedia.org/wiki/Wurfparabel
 		var t = (Date.now() - jumpStart) / 100;
-		var y = 80 * t - (10 * t * t) / 2; 	//TODO die 70 ist momentan geraten, berechnen ^^ 
+		var y = 80 * t - (10 * t * t) / 2; 	//TODO die 70 ist momentan geraten, berechnen ^^
 		player.y = baseLine - player.height - y;
 
 		//Check for finish.
@@ -218,7 +218,7 @@ Game = (function() {
 			return true;
 		}
 	}
-	
+
 	/**
 	*	Will generate and obstacle starting at a given x index.
 	*/
@@ -240,7 +240,7 @@ Game = (function() {
 		obstacleReach = base + obstacle.width * baseDimension + longer;*/
 		var comp = Math.random();
 		var maxHeight = (comp < 0.65) ? 2 : 3;
-	
+
 		//Alwas 4 half blocks.
 		var obj = {
 			width: 2,
@@ -257,7 +257,7 @@ Game = (function() {
 				one.height = Math.round(Math.random() * maxHeight) * 0.5;
 			}
 			one.width = 0.5;
-			
+
 			//Only remember this if it is actually there. Else player my die tot he ground.
 			if(one.height > 0) {
 				obj.elements.push(one);
@@ -277,10 +277,10 @@ Game = (function() {
 		if(longer < 0) longer = baseDimension;
 		obstacleReach = base + obstacle.width * baseDimension + longer;
 	}
-	
+
 	/**
 	*	A list of obstacles the player can encounter;
-		
+
 		width: increment obstacleReach with width * baseDimension.
 		elements:
 			y: factor to multiplay width with to add to baseLine
@@ -363,14 +363,23 @@ Game = (function() {
 			]
 		}
 	]
-	
+
 	/**
 	*	Set the callback for gameOver.
 	*/
 	function setGameOverCallback(func) {
 		gameOverCallback = func;
 	}
-	
+
+	const infoObject = {
+        name: 'Runner',
+        description: 'How far can you run?',
+        shortDescription: 'How far can you run?',
+        imgUrl: 'runner.jpg',
+        manual: 'Use "space" to jump.',
+        file: 'runner.js'
+    }
+
 	/**
 	*	Return an object with all functions that should be publically accessable.
 	*/
@@ -379,6 +388,8 @@ Game = (function() {
 		pause: pause,
 		resume: resume,
 		setGameOverCallback: setGameOverCallback
+		info: infoObject
 	};
-	
+
 }());
+GAMES.push(runner);
