@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "md-docs": "node_modules/.bin/jsdoc2md src/games/standard.js --template docs/development-template.md > docs/development.md",
     "jsdoc": "./node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
-    "serve-docs": "./node_modules/.bin/live-server ./docs/jsdoc"
+    "serve-docs": "./node_modules/.bin/live-server ./docs/jsdoc",
+    "docs": "npm run md-docs && npm run jsdoc"
   },
   "repository": {
     "type": "git",

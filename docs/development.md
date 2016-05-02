@@ -14,15 +14,22 @@ Check out the documentation below to see the interface expected from a game. For
 <a name="GAME"></a>
 
 ## GAME : <code>object</code>
-Global namespace for the implemented game.	Reference it via the `GAME` variable.
+Global GAME.	Reference it via the `GAME` variable.
 
 **Kind**: global namespace  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| info | <code>[infoObject](#GAME+infoObject)</code> | Infos about this game. |
+
 
 * [GAME](#GAME) : <code>object</code>
     * [.start()](#GAME+start)
     * [.pause()](#GAME+pause)
     * [.resume()](#GAME+resume)
     * [.setGameOverCallback()](#GAME+setGameOverCallback)
+    * [.infoObject](#GAME+infoObject) : <code>object</code>
 
 <a name="GAME+start"></a>
 
@@ -48,3 +55,16 @@ Resume the game.
 Set the callback for gameOver.
 
 **Kind**: instance method of <code>[GAME](#GAME)</code>  
+<a name="GAME+infoObject"></a>
+
+### gamE.infoObject : <code>object</code>
+**Kind**: instance typedef of <code>[GAME](#GAME)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | Name of this game. |
+| description | <code>string</code> | Desciption for this game. |
+| imgUrl | <code>string</code> | URL to a preview image for this game. |
+| manual | <code>string</code> | Information on how to play this game. |
+

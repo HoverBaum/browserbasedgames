@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>runner.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="GAME.html">GAME</a><ul class='methods'><li data-type='method'><a href="GAME.html#pause">pause</a></li><li data-type='method'><a href="GAME.html#resume">resume</a></li><li data-type='method'><a href="GAME.html#setGameOverCallback">setGameOverCallback</a></li><li data-type='method'><a href="GAME.html#start">start</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#Game">Game</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">runner.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+*	In this game you are a cube that has to run through a procedurally generated endless level.
+*
+*/
+
+/*
+Colors:
+play: FF2939
+Yellow: FFFA43
+Blue: 147CB2
+lighter blue 0D8ACC
+
+*/
+	
+Game = (function() {
+
+	//The interval for the tick.
+	var interval = null;
+	
+	//Boolean wether or not the game is running.
+	//Generally the game is on-going. Not indicating wether or not game is paused.
+	var running = false;
+	
+	//The function to be called once the game is over.
+	var gameOverCallback = null;
+	
+	var player = null;
+	
+	var baseDimension = 20;
+	var baseLine = 0;
+	var canvas = null;
+	
+	var blocks = [];
+	
+	
+	//How far the last obstacle reaches.
+	var obstacleReach = 0;
+	
+	var groundColor = '#147CB2';
+	var obstacleColor = '#0D8ACC';
+	
+	//Remember to only jump once.
+	var jumping = false;
+	var jumpStart = 0;
+	
+	/**
+	*	Start the game.
+	*/
+	function startGame(gameCanvas) {
+		
+		//Basic set-up
+		blocks = [];
+		pause();
+		
+		//Fill basic variables
+		canvas = gameCanvas;
+		baseDimension = Math.floor(window.innerWidth / 10);
+		
+		//Make sure we can fit at least 5 blocks vertically.
+		if(Math.floor(window.innerHeight/5) > baseDimension) {
+			baseDimension = Math.floor(window.innerHeight/5);
+		}
+		baseLine = Math.round(window.innerHeight - (baseDimension * 1.5));
+		
+		//Create player and starting ground.
+		var base = baseDimension / 2;
+		player = createEntity(baseDimension, baseLine-base, base, base, "#FF2939");
+		player.angle = 45;
+
+		obstacleReach = window.innerWidth / 2;
+		
+		registerListener();
+		running = true;
+		resume();
+	}
+	
+	/**
+	*	Creates a new entity with the gives parameters.
+	*/
+	function createEntity(x, y, width, height, color) {
+		return {
+			x: x,
+			y: y,
+			width: width,
+			height: height,
+			color: color
+		};
+	}
+	
+	/**
+	*	The tick of the game that gets called rappidly.
+	*/
+	function tick() {
+		if(!running) return false;
+		player.x += baseDimension / 30;
+		jump();
+		
+		//Keep the player entertained with obstacles.
+		if((player.x + window.innerWidth) > obstacleReach) {
+			
+			//We are nice and ensuring that the player can land and take of again.
+			generateObstacle(obstacleReach + baseDimension * 5);
+		}
+		
+		checkCollosion();
+		drawFrame();
+	}
+	
+	/**
+	*	Checks for collision between the player and any object.
+	*/
+	function checkCollosion() {
+		var right = player.x + player.width;
+		var bottom = player.y + player.height;
+		blocks.forEach(function(block) {
+			
+			//Check if collides with player, easy since player can only approach from left.
+			if(bottom >= block.y &amp;&amp; right >= block.x &amp;&amp; player.x &lt;= (block.x + block.width)) {
+				gameOver();
+			}
+			
+			//Remove if out of view for sure.
+			if(block.x &lt; (player.x - window.innerWidth)) {
+				blocks.splice(blocks.indexOf(block), 1);
+			}
+				
+		})
+	}
+	
+	/**
+	*	Draws the current frame of the game.
+	*/
+	function drawFrame() {
+		
+		//Get context and clear canvas.
+		var ctx = canvas.getContext('2d');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		//Draw the ground.
+		ctx.fillStyle = groundColor;
+		ctx.fillRect(0, baseLine, window.innerWidth, window.innerHeight-baseLine);
+		
+		//Draw the blocks.
+		blocks.forEach(function(block) {
+			ctx.fillStyle = block.color;
+			ctx.fillRect(block.x-player.x+baseDimension, block.y, block.width+1, block.height);
+		})
+		
+		//Draw the player
+		ctx.fillStyle = player.color;
+		ctx.fillRect(baseDimension, player.y, player.width, player.height);
+	}
+	
+	/**
+	*	Pause the game.
+	*/
+	function pause() {
+		clearInterval(interval);
+	}
+	
+	/**
+	*	Resume the game.
+	*/
+	function resume() {
+		tick();
+		interval = setInterval(tick, 10);
+	}
+	
+	/**
+	*	Called when the game is over, the player looses.
+	*/
+	function gameOver() {
+		pause();
+		running = false;
+		if(gameOverCallback !== null) {
+			var m = player.x / baseDimension;
+			m = m.toString().substr(0,4);
+			var text = 'You traveled ' + m + 'm.';
+			gameOverCallback(text);
+		}
+	}
+	
+	/**
+	*	Registers all listeners to player input.
+	*/
+	function registerListener() {
+		window.addEventListener('keydown', function(e) {
+			if((e.keyCode === 32 || e.keyCode === 87 || e.keyCode === 38) &amp;&amp; running) {
+				startJump();
+			}
+		})
+	}
+	
+	/**
+	*	Starts a jump.
+	*/	
+	function startJump() {
+		if(jumping) return;
+		jumping = true;
+		jumpStart = Date.now();
+	}
+	
+	/**
+	*	Performs a jump.
+	*/
+	function jump() {
+		
+		//Do the jump. Wurf nach http://de.wikipedia.org/wiki/Wurfparabel
+		var t = (Date.now() - jumpStart) / 100;
+		var y = 80 * t - (10 * t * t) / 2; 	//TODO die 70 ist momentan geraten, berechnen ^^ 
+		player.y = baseLine - player.height - y;
+
+		//Check for finish.
+		if(y &lt;= 0) {
+			jumping = false;
+			player.y = baseLine - player.height;
+			return true;
+		}
+	}
+	
+	/**
+	*	Will generate and obstacle starting at a given x index.
+	*/
+	function generateObstacle(base) {
+		/*var index = Math.round(Math.random() * possibleObstacles.length) - 1;
+		if(index &lt; 0) {index = 0;}
+		var obstacle = possibleObstacles[index];
+		obstacle.elements.forEach(function(obst) {
+			var width = obst.width * baseDimension;
+			var height = obst.height * baseDimension;
+			var y = baseLine + (height * obst.y);
+			var x = (width * obst.x) + base;
+			var color = obst.color || obstacleColor;
+			var block = createEntity(x, y, width, height, color);
+			blocks.push(block);
+		});
+		var longer = (Math.random() > 0.8) ? baseDimension * Math.random() * 5 : 0;
+		if(longer &lt; 0) longer = baseDimension;
+		obstacleReach = base + obstacle.width * baseDimension + longer;*/
+		var comp = Math.random();
+		var maxHeight = (comp &lt; 0.65) ? 2 : 3;
+	
+		//Alwas 4 half blocks.
+		var obj = {
+			width: 2,
+			elements: []
+		}
+		for(var i = 0; i &lt; 4; i++) {
+			var one = {
+				x: i,
+				y: -1,
+			}
+			if(i === 0 || i === 3 || i === 2) {
+				one.height = Math.round(Math.random() * 2) * 0.5;
+			} else {
+				one.height = Math.round(Math.random() * maxHeight) * 0.5;
+			}
+			one.width = 0.5;
+			
+			//Only remember this if it is actually there. Else player my die tot he ground.
+			if(one.height > 0) {
+				obj.elements.push(one);
+			}
+		}
+		var obstacle = obj;
+		obstacle.elements.forEach(function(obst) {
+			var width = obst.width * baseDimension;
+			var height = obst.height * baseDimension;
+			var y = baseLine + (height * obst.y);
+			var x = (width * obst.x) + base;
+			var color = obst.color || obstacleColor;
+			var block = createEntity(x, y, width, height, color);
+			blocks.push(block);
+		});
+		var longer = (Math.random() > 0.66) ? baseDimension * Math.random() * 5 : 0;
+		if(longer &lt; 0) longer = baseDimension;
+		obstacleReach = base + obstacle.width * baseDimension + longer;
+	}
+	
+	/**
+	*	A list of obstacles the player can encounter;
+		
+		width: increment obstacleReach with width * baseDimension.
+		elements:
+			y: factor to multiplay width with to add to baseLine
+			width, height: factors for baseDimension
+			x: factor to multiplay width with to add to start of obstacle
+	*/
+	var possibleObstacles = [
+		{
+			width: 1,
+			elements: [
+				{
+					x: 0,
+					y: -1,
+					width: 0.5,
+					height: 1
+				},
+				{
+					x: 2,
+					y: -1,
+					width: 0.5,
+					height: 0.5
+				}
+			]
+		},
+		{
+			width: 1,
+			elements: [
+				{
+					x: 0,
+					y: -1,
+					width: 0.5,
+					height: 1
+				},
+				{
+					x: 1,
+					y: -1,
+					width: 0.5,
+					height: 1.5
+				}
+			]
+		},
+		{
+			width: 2,
+			elements: [
+				{
+					x: 0,
+					y: -1,
+					width: 0.5,
+					height: 1
+				},
+				{
+					x: 2,
+					y: -1,
+					width: 0.5,
+					height: 1
+				}
+			]
+		},
+		{
+			width: 1,
+			elements: [
+				{
+					x: 1,
+					y: -1,
+					width: 0.5,
+					height: 1
+				},
+				{
+					x: 2,
+					y: -1,
+					width: 0.5,
+					height: 1.5
+				},
+				{
+					x: 0,
+					y: -1,
+					width: 0.5,
+					height: 0.5
+				}
+			]
+		}
+	]
+	
+	/**
+	*	Set the callback for gameOver.
+	*/
+	function setGameOverCallback(func) {
+		gameOverCallback = func;
+	}
+	
+	/**
+	*	Return an object with all functions that should be publically accessable.
+	*/
+	return {
+		start: startGame,
+		pause: pause,
+		resume: resume,
+		setGameOverCallback: setGameOverCallback
+	};
+	
+}());</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun May 01 2016 10:06:29 GMT+0800 (China Normalzeit) using the docdash theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
