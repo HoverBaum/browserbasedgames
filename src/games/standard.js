@@ -1,3 +1,4 @@
+
 /**
  *	Global GAME.
  *	Reference it via the `GAME` variable.
