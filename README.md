@@ -3,7 +3,7 @@
 # Browser Based Games
 A collection of simple JavaScript games.
 
-[Play them now!](http://hoverbaum.github.io/browserbasedgames/)
+[Play them now!](http://browserbasedgames.net)
 
 ## Get involved
 
